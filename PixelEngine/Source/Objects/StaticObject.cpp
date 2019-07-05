@@ -13,10 +13,6 @@ StaticObject::StaticObject()
 
 StaticObject::StaticObject(Vector2 _pos, char* _spriteId, Vector2* _spriteOffset, unsigned char _spriteCount, char _paletteId, bool _passable, bool _foreground, bool _mirrorX, bool _mirrorY)
 {
-	if (_pos.x < 0 || _pos.y < 0)
-	{
-		_pos = Vector2();
-	}
 	pos = _pos;
 	spriteId = _spriteId;
 	spriteOffset = _spriteOffset;

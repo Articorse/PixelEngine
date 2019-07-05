@@ -2,10 +2,6 @@
 
 void GameObject::SetPos(Vector2 _pos)
 {
-	if (_pos.x < 0 || _pos.y < 0)
-	{
-		_pos = Vector2();
-	}
 	pos = _pos;
 }
 

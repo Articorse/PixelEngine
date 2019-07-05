@@ -2,7 +2,6 @@
 
 #include <cstdint>
 
-
 struct Sprite
 {
 	union

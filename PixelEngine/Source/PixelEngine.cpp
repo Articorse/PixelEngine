@@ -13,8 +13,8 @@ namespace PxEngine
 	Palette* PixelEngine::staticPalettes[] = { 0 };
 	Palette* PixelEngine::spritePalettes[] = { 0 };
 	Vector2 PixelEngine::perspectivePos = Vector2(0, 0);
-	Sprite PixelEngine::dynamicSpriteTable[256] = { 0 };
-	Sprite PixelEngine::staticSpriteTable[256] = { 0 };
+	bitset<128> PixelEngine::dynamicSpriteTable[256] = { 0 };
+	bitset<128> PixelEngine::staticSpriteTable[256] = { 0 };
 	StaticObject* PixelEngine::staticObjects = 0;
 	unsigned int PixelEngine::staticObjectsCount = 0;
 
@@ -27,8 +27,6 @@ namespace PxEngine
 		pixelDensity = _pixelDensity;
 		wndWidth = width * pixelDensity;
 		wndHeight = height * pixelDensity;
-
-		worldPixels = new Color[height * width];
 
 		InitializePalettes();
 		SetDynamicSpriteTable();
@@ -99,186 +97,22 @@ namespace PxEngine
 
 	void PixelEngine::SetPerspectivePos(Vector2 pPos)
 	{
-		if (pPos.x >= 0 && pPos.y >= 0)
-		{
-			perspectivePos = pPos;
-		}
+		perspectivePos = pPos;
 	}
 
+
+	// !!! Rework to be able to draw in world space without using the old 'worldPixels' system.
 	void PixelEngine::DrawWorldPixel(Vector2 pixPos, Color c)
 	{
-		worldPixels[pixPos.x + pixPos.y * width] = c;
+		//worldPixels[pixPos.x + pixPos.y * width] = c;
 	}
 
-	void PixelEngine::DrawSprite(Sprite sprite, Vector2 pos, Palette palette, bool mirrorX, bool mirrorY)
-	{
-		Vector2 curPixel = Vector2(0, 0);
-		char xDirection = 1;
-		char yDirection = 1;
-
-		if (mirrorX)
-		{
-			curPixel += Vector2(7, 0);
-			xDirection *= -1;
-		}
-
-		if (mirrorY)
-		{
-			curPixel += Vector2(0, 7);
-			yDirection *= -1;
-		}
-
-		curPixel += pos;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y0]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y0]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y0]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y0]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y0]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y0]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y0]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y0]);
-		curPixel.x -= xDirection * 7;
-		curPixel.y += yDirection;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y1]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y1]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y1]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y1]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y1]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y1]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y1]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y1]);
-		curPixel.x -= xDirection * 7;
-		curPixel.y += yDirection;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y2]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y2]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y2]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y2]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y2]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y2]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y2]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y2]);
-		curPixel.x -= xDirection * 7;
-		curPixel.y += yDirection;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y3]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y3]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y3]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y3]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y3]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y3]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y3]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y3]);
-		curPixel.x -= xDirection * 7;
-		curPixel.y += yDirection;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y4]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y4]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y4]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y4]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y4]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y4]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y4]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y4]);
-		curPixel.x -= xDirection * 7;
-		curPixel.y += yDirection;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y5]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y5]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y5]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y5]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y5]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y5]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y5]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y5]);
-		curPixel.x -= xDirection * 7;
-		curPixel.y += yDirection;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y6]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y6]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y6]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y6]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y6]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y6]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y6]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y6]);
-		curPixel.x -= xDirection * 7;
-		curPixel.y += yDirection;
-
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x0y7]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x1y7]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x2y7]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x3y7]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x4y7]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x5y7]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x6y7]);
-		curPixel.x += xDirection;
-		PixelEngine::DrawWorldPixel(curPixel, palette[sprite.x7y7]);
-	}
-
-	Sprite* PixelEngine::GetDynamicSpriteTable()
+	bitset<128>* PixelEngine::GetDynamicSpriteTable()
 	{
 		return dynamicSpriteTable;
 	}
 
-	Sprite* PixelEngine::GetStaticSpriteTable()
+	bitset<128>* PixelEngine::GetStaticSpriteTable()
 	{
 		return staticSpriteTable;
 	}
@@ -333,50 +167,166 @@ namespace PxEngine
 
 	void PixelEngine::SetDynamicSpriteTable()
 	{
-		Sprite spriteMage = { 0 };
-		Sprite spriteKnight = { 0 };
-		Sprite spriteDuck = { 0 };
-		Sprite spriteSnake = { 0 };
+		bool sprMageArray[128] = 
+		{
+			0,0,	0,0,	0,0,	0,0,	0,0,	0,0,	0,0,	0,0,
 
-		spriteMage.i32_1 = 2235831632;
-		spriteMage.i32_2 = 1118304;
-		spriteMage.i32_3 = 1079259925;
-		spriteMage.i32_4 = 5456;
+			0,0,	0,0,	0,1,	0,1,	0,1,	0,1,	0,1,	0,0,
 
+			0,0,	0,1,	0,1,	0,1,	1,1,	1,1,	1,1,	0,1,
+
+			0,1,	0,1,	0,1,	1,1,	1,0,	1,1,	1,0,	0,0,
+
+			0,1,	0,0,	0,1,	1,1,	1,1,	1,1,	1,1,	0,0,
+
+			0,0,	0,0,	1,0,	0,1,	1,1,	1,1,	0,1,	0,0,
+
+			0,0,	0,1,	0,0,	0,1,	0,1,	0,1,	0,0,	1,0,
+
+			0,0,	0,0,	0,1,	0,1,	0,1,	0,1,	0,1,	0,0
+		};
+
+		bitset<128> spriteMage;
+		for (u_int i = 0; i < 128; i++)
+		{
+			spriteMage[i] = sprMageArray[i];
+		}
 		dynamicSpriteTable[0] = spriteMage;
 
-		spriteKnight.i32_1 = 178783236;
-		spriteKnight.i32_2 = 3668904943;
-		spriteKnight.i32_3 = 2308474207;
-		spriteKnight.i32_4 = 2192082264;
+		bool sprKnightArray[128] =
+		{
+			1,0,	0,0,	0,0,	1,0,	1,0,	1,0,	1,0,	0,0,
 
+			1,0,	0,0,	0,1,	0,1,	0,1,	0,1,	1,0,	0,0,
+
+			1,0,	0,0,	1,0,	0,1,	1,0,	0,1,	1,0,	0,0,
+
+			1,0,	0,0,	0,1,	0,1,	1,0,	0,1,	1,0,	1,0,
+
+			1,1,	0,1,	1,0,	1,0,	1,0,	1,0,	1,1,	1,1,
+
+			0,0,	0,0,	1,0,	1,1,	1,1,	1,0,	1,1,	1,1,
+
+			0,0,	0,0,	1,0,	1,0,	1,0,	1,0,	1,0,	0,0,
+
+			0,0,	0,0,	0,1,	0,0,	0,0,	0,0,	0,1,	0,0
+		};
+
+		bitset<128> spriteKnight;
+		for (u_int i = 0; i < 128; i++)
+		{
+			spriteKnight[i] = sprKnightArray[i];
+		}
 		dynamicSpriteTable[1] = spriteKnight;
 
-		spriteDuck.i32_1 = 89392468;
-		spriteDuck.i32_2 = 74712406;
-		spriteDuck.i32_3 = 84;
-		spriteDuck.i32_4 = 0;
 
-		dynamicSpriteTable[2] = spriteDuck;
+		//spriteKnight.i32_1 = 178783236;
+		//spriteKnight.i32_2 = 3668904943;
+		//spriteKnight.i32_3 = 2308474207;
+		//spriteKnight.i32_4 = 2192082264;
 
-		spriteSnake.i32_1 = 1349129578;
-		spriteSnake.i32_2 = 67125672;
-		spriteSnake.i32_3 = 357831884;
-		spriteSnake.i32_4 = 257694800;
+		//dynamicSpriteTable[1] = spriteKnight;
 
-		dynamicSpriteTable[3] = spriteSnake;
+		//spriteDuck.i32_1 = 89392468;
+		//spriteDuck.i32_2 = 74712406;
+		//spriteDuck.i32_3 = 84;
+		//spriteDuck.i32_4 = 0;
+
+		//dynamicSpriteTable[2] = spriteDuck;
+
+		//spriteSnake.i32_1 = 1349129578;
+		//spriteSnake.i32_2 = 67125672;
+		//spriteSnake.i32_3 = 357831884;
+		//spriteSnake.i32_4 = 257694800;
+
+		//dynamicSpriteTable[3] = spriteSnake;
 	};
 
 	void PixelEngine::SetStaticSpriteTable()
 	{
-		Sprite spriteBricks = { 0 };
+		bool sprArray[128] =
+		{
+			0,1,	0,1,	0,1,	1,1,	1,0,	0,1,	0,1,	0,1,
 
-		spriteBricks.i32_1 = 2863398911;
-		spriteBricks.i32_2 = 2505545047;
-		spriteBricks.i32_3 = 2880110591;
-		spriteBricks.i32_4 = 1469405077;
+			0,1,	0,1,	0,1,	1,1,	1,0,	0,1,	0,1,	0,1,
+
+			1,0,	1,0,	1,0,	1,1,	1,0,	1,0,	1,0,	1,0,
+
+			1,1,	1,1,	1,1,	1,1,	1,1,	1,1,	1,1,	1,1,
+
+			1,0,	0,1,	0,1,	0,1,	0,1,	0,1,	0,1,	1,1,
+
+			1,0,	0,1,	0,1,	0,1,	0,1,	0,1,	0,1,	1,1,
+
+			1,0,	1,0,	1,0,	1,0,	1,0,	1,0,	1,0,	1,1,
+
+			1,1,	1,1,	1,1,	1,1,	1,1,	1,1,	1,1,	1,1,
+		};		
+
+		bitset<128> spriteBricks;
+
+		for (u_int i = 0; i < 128; i++)
+		{
+			spriteBricks[i] = sprArray[i];
+		}
 
 		staticSpriteTable[0] = spriteBricks;
+
+		// TEMP
+
+		bool sprMageArray[128] =
+		{
+			0,0,	0,0,	0,0,	0,0,	0,0,	0,0,	0,0,	0,0,
+
+			0,0,	0,0,	0,1,	0,1,	0,1,	0,1,	0,1,	0,0,
+
+			0,0,	0,1,	0,1,	0,1,	1,1,	1,1,	1,1,	0,1,
+
+			0,1,	0,1,	0,1,	1,1,	1,0,	1,1,	1,0,	0,0,
+
+			0,1,	0,0,	0,1,	1,1,	1,1,	1,1,	1,1,	0,0,
+
+			0,0,	0,0,	1,0,	0,1,	1,1,	1,1,	0,1,	0,0,
+
+			0,0,	0,1,	0,0,	0,1,	0,1,	0,1,	0,0,	1,0,
+
+			0,0,	0,0,	0,1,	0,1,	0,1,	0,1,	0,1,	0,0
+		};
+
+		bitset<128> spriteMage;
+		for (u_int i = 0; i < 128; i++)
+		{
+			spriteMage[i] = sprMageArray[i];
+		}
+		staticSpriteTable[1] = spriteMage;
+
+		bool sprKnightArray[128] =
+		{
+			0,0,	1,0,	1,0,	1,0,	1,0,	0,0,	0,0,	1,0,
+
+			0,0,	1,0,	0,1,	0,1,	0,1,	0,1,	0,0,	1,0,
+
+			0,0,	1,0,	0,1,	1,0,	0,1,	1,0,	0,0,	1,0,
+
+			1,1,	1,1,	0,1,	0,1,	0,1,	0,1,	0,0,	1,0,
+
+			1,1,	1,1,	1,0,	1,0,	1,0,	1,0,	0,1,	1,1,
+
+			1,1,	1,1,	1,0,	1,1,	1,1,	1,0,	0,0,	0,0,
+
+			0,0,	1,0,	1,0,	1,0,	1,0,	1,0,	0,0,	0,0,
+
+			0,0,	0,1,	0,0,	0,0,	0,0,	0,1,	0,0,	0,0
+		};
+
+		bitset<128> spriteKnight;
+		for (u_int i = 0; i < 128; i++)
+		{
+			spriteKnight[i] = sprKnightArray[i];
+		}
+		staticSpriteTable[2] = spriteKnight;
+
+		// TEMP
 	};
 
 	HWND PixelEngine::CreatePixelWindow(unsigned int _width, unsigned int _height, unsigned int _pixelDensity, const char _windowTitle[])
@@ -452,15 +402,36 @@ namespace PxEngine
 			int pitch = 4 * wndWidth; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
 
 
-			for (int screenY = 0; screenY < height; screenY++)
+			// Fill the visible screen with the background color
+			for (u_int screenY = 0; screenY < height * pixelDensity; screenY++)
 			{
-				for (int screenX = 0; screenX < width; screenX++)
+				for (u_int screenX = 0; screenX < width * pixelDensity; screenX++)
 				{
-					Vector2 relPixel = Vector2(screenX + perspectivePos.x, screenY + perspectivePos.y);
-					if (relPixel.x >= 0 && relPixel.x < width && relPixel.y >= 0 && relPixel.y < height)
+					u_int index = screenY * pitch;
+					index += screenX * 4;
+
+					wndPixels[index + 2] = backgroundColor.r;
+					wndPixels[index + 1] = backgroundColor.g;
+					wndPixels[index + 0] = backgroundColor.b;
+				}
+			}
+
+			// Draw all static objects - !!! Split drawing into three phases - background static objects, dynamic objects, foreground static objects
+			for (u_int i = 0; i < staticObjectsCount; i++)
+			{
+				if (&staticObjects[i])
+				{
+					StaticObject* sO = &staticObjects[i];
+					Vector2 objPos = sO->GetPos();
+					unsigned char spriteCount = sO->GetSpriteCount();
+					Vector2* spritePositions = new Vector2[spriteCount];
+					for (unsigned char n = 0; n < spriteCount; n++)
 					{
-						UINT32 index = relPixel.x + relPixel.y * width;
-						worldPixels[index] = backgroundColor;
+						spritePositions[n] = objPos + sO->GetSpriteOffset()[n];
+					}
+					for (unsigned char n = 0; n < spriteCount; n++)
+					{
+						DrawSprite(sO, &spritePositions[n], pitch, wndPixels);
 					}
 				}
 			}
@@ -469,55 +440,17 @@ namespace PxEngine
 			{
 				if (&staticObjects[i])
 				{
-					Vector2 objPos = staticObjects[i].GetPos();
-					unsigned char spriteCount = staticObjects[i].GetSpriteCount();
+					StaticObject* sO = &staticObjects[i];
+					Vector2 objPos = sO->GetPos();
+					unsigned char spriteCount = sO->GetSpriteCount();
 					Vector2* spritePositions = new Vector2[spriteCount];
 					for (unsigned char n = 0; n < spriteCount; n++)
 					{
-						spritePositions[n] = objPos + staticObjects[n].GetSpriteOffset()[n];
+						spritePositions[n] = objPos + sO->GetSpriteOffset()[n];
 					}
 					for (unsigned char n = 0; n < spriteCount; n++)
 					{
-						Sprite* spr = &staticSpriteTable[*staticObjects[n].GetSprite()];
-						Vector2* sprPos = &spritePositions[n];
-						Palette* sprPal = spritePalettes[staticObjects[n].GetPaletteId()];
-						bool* mirX = &staticObjects[n].mirrorX;
-						bool* mirY = &staticObjects[n].mirrorY;
-
-
-						DrawSprite(*spr, *sprPos, *sprPal, mirX, mirY);
-					}
-				}
-			}
-
-			for (int screenY = 0; screenY < height; screenY++)
-			{
-				for (int screenX = 0; screenX < width; screenX++)
-				{
-					Vector2 relPixel = Vector2(screenX + perspectivePos.x, screenY + perspectivePos.y);
-					if (relPixel.x >= 0 && relPixel.x < width && relPixel.y >= 0 && relPixel.y < height)
-					{
-						UINT32 index = relPixel.x + relPixel.y * width;
-
-						if (!worldPixels[index].transparent)
-						{
-							u_int indexMin = screenY * pitch * pixelDensity;
-							indexMin += screenX * 4 * pixelDensity;
-
-							u_int indexMax = (screenY + 1) * pitch * pixelDensity - pitch;
-							indexMax += (screenX + 1) * 4 * pixelDensity - 4;
-
-
-							for (u_int y = indexMin; y < indexMax + 1; y = y + pitch)
-							{
-								for (u_int x = y; x < y + pixelDensity * 4; x = x + 4)
-								{
-									wndPixels[x + 2] = worldPixels[index].r;
-									wndPixels[x + 1] = worldPixels[index].g;
-									wndPixels[x + 0] = worldPixels[index].b;
-								}
-							}
-						}
+						DrawSprite(sO, &spritePositions[n], pitch, wndPixels);
 					}
 				}
 			}
@@ -544,5 +477,76 @@ namespace PxEngine
 
 
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	}
+
+	void PixelEngine::DrawSprite(StaticObject* sO, Vector2* sprPos, int pitch, unsigned char* wndPixels)
+	{
+		bitset<128> * spr = &staticSpriteTable[*sO->GetSprite()];
+		Palette* sprPal = spritePalettes[sO->GetPaletteId()];
+		bool* mirX = &sO->mirrorX;
+		bool* mirY = &sO->mirrorY;
+
+		{
+			for (unsigned char sprY = 0; sprY < 8; sprY++)
+			{
+				for (unsigned char sprX = 0; sprX < 8; sprX++)
+				{
+					Vector2 relPos = Vector2(sprX + sprPos->x - perspectivePos.x, sprY + sprPos->y - perspectivePos.y);
+					if (relPos.x >= 0 && relPos.x < width && relPos.y >= 0 && relPos.y < height)
+					{
+						u_int indexMin = relPos.y * pitch * pixelDensity;
+						indexMin += relPos.x * 4 * pixelDensity;
+
+						u_int indexMax = (relPos.y + 1) * pitch * pixelDensity - pitch;
+						indexMax += (relPos.x + 1) * 4 * pixelDensity - 4;
+
+						Palette pal = *sprPal;
+
+						bitset<128> bs = *spr;
+
+
+						int a;
+						int b;
+
+						if (!*mirX && !*mirY)
+						{
+							a = (sprX + (7 - sprY) * 8) * 2;
+							b = (sprX + (7 - sprY) * 8) * 2 + 1;
+						}
+						else if (*mirX && *mirY)
+						{
+							a = ((7 - sprX) + sprY * 8) * 2;
+							b = ((7 - sprX) + sprY * 8) * 2 + 1;
+						}
+						else if (*mirX && !*mirY)
+						{
+							a = ((7 - sprX) + (7 - sprY) * 8) * 2;
+							b = ((7 - sprX) + (7 - sprY) * 8) * 2 + 1;
+						}
+						else
+						{
+							a = (sprX + sprY * 8) * 2;
+							b = (sprX + sprY * 8) * 2 + 1;
+						}
+
+						int col = bs[a] + bs[b] * 2;
+
+						if (col > 0)
+						{
+							for (u_int y = indexMin; y < indexMax + 1; y = y + pitch)
+							{
+								for (u_int x = y; x < y + pixelDensity * 4; x = x + 4)
+								{
+									wndPixels[x + 2] = pal[col].r;
+									wndPixels[x + 1] = pal[col].g;
+									wndPixels[x + 0] = pal[col].b;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
 	}
 }

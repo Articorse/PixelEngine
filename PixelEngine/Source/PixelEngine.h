@@ -3,12 +3,15 @@
 #include "Graphics/Color.h"
 #include "Graphics/Palette.h"
 #include "Math/Vector2.h"
-#include "Graphics/Sprite.h"
+//#include "Graphics/Sprite.h"
 #include "Objects/StaticObject.h"
+
+#include <bitset>
+
+using namespace std;
 
 namespace PxEngine
 {
-	static Color* worldPixels;
 	enum PaletteType { StaticPalette, SpritePalette };
 
 	class PixelEngine
@@ -24,10 +27,10 @@ namespace PxEngine
 
 		static void SetPerspectivePos(Vector2 pPos);
 		static void DrawWorldPixel(Vector2 pixPos, Color c);
-		static void DrawSprite(Sprite sprite, Vector2 pos, Palette palette, bool mirrorX = false, bool mirrorY = false);
+		//static void DrawSprite(Sprite sprite, Vector2 pos, Palette palette, bool mirrorX = false, bool mirrorY = false);
 
-		static Sprite* GetDynamicSpriteTable();
-		static Sprite* GetStaticSpriteTable();
+		static bitset<128>* GetDynamicSpriteTable();
+		static bitset<128>* GetStaticSpriteTable();
 
 		static void AddStaticObject(StaticObject* sO);
 
@@ -43,8 +46,8 @@ namespace PxEngine
 		static Palette* staticPalettes[4];
 		static Palette* spritePalettes[4];
 		static Color backgroundColor;
-		static Sprite dynamicSpriteTable[256];
-		static Sprite staticSpriteTable[256];
+		static bitset<128> dynamicSpriteTable[256];
+		static bitset<128> staticSpriteTable[256];
 
 		static StaticObject* staticObjects;
 		static unsigned int staticObjectsCount;
@@ -55,6 +58,7 @@ namespace PxEngine
 		static void SetDynamicSpriteTable();
 		static void SetStaticSpriteTable();
 
+		static void DrawSprite(StaticObject* sO, Vector2* sprPos, int pitch, unsigned char* wndPixels);
 
 		static HWND CreatePixelWindow(unsigned int _width, unsigned int _height, unsigned int _pixelDensity, const char _windowTitle[]);
 		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
